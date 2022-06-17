@@ -8,3 +8,5 @@ Example Output:
 ![alt tag](https://raw.githubusercontent.com/OceanAirdrop/SqlServerToPlantUML/main/SqlServerToPlantUML/ExampleDiagrams/AdventureWorks2014%20-%20HumanResources%20Schema.png)
 
 More Examples Here: https://github.com/OceanAirdrop/SqlServerToPlantUML/tree/main/SqlServerToPlantUML/ExampleDiagrams
+
+Inspiration From Here: https://raphael-leger.medium.com/automatically-generating-up-to-date-database-diagrams-with-typeorm-d1279a20545e
