@@ -1,0 +1,72 @@
+
+@startuml
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+table( HumanResources.Shift )
+{
+   primary_key( ShiftID ): tinyint <<PK>>
+   column( Name ): nvarchar
+   column( StartTime ): time
+   column( EndTime ): time
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.Department )
+{
+   primary_key( DepartmentID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( GroupName ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.Employee )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( NationalIDNumber ): nvarchar
+   column( LoginID ): nvarchar
+   column( OrganizationNode ): hierarchyid
+   column( OrganizationLevel ): smallint
+   column( JobTitle ): nvarchar
+   column( BirthDate ): date
+   column( MaritalStatus ): nchar
+   column( Gender ): nchar
+   column( HireDate ): date
+   column( SalariedFlag ): bit
+   column( VacationHours ): smallint
+   column( SickLeaveHours ): smallint
+   column( CurrentFlag ): bit
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.EmployeeDepartmentHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( DepartmentID ): smallint <<PK>>
+   primary_key( ShiftID ): tinyint <<PK>>
+   primary_key( StartDate ): date <<PK>>
+   column( EndDate ): date
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.EmployeePayHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( RateChangeDate ): datetime <<PK>>
+   column( Rate ): money
+   column( PayFrequency ): tinyint
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.JobCandidate )
+{
+   primary_key( JobCandidateID ): int <<PK>>
+   foreign_key( BusinessEntityID ): int <<FK>>
+   column( Resume ): xml
+   column( ModifiedDate ): datetime
+}
+' *** Define Table Relationships
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Department
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Employee
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Shift
+HumanResources.EmployeePayHistory }|--|| HumanResources.Employee
+HumanResources.JobCandidate }|--|| HumanResources.Employee
+@enduml

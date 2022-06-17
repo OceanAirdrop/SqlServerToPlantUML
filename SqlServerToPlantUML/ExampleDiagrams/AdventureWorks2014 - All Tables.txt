@@ -1,0 +1,756 @@
+
+@startuml
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+table( Production.ScrapReason )
+{
+   primary_key( ScrapReasonID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.Shift )
+{
+   primary_key( ShiftID ): tinyint <<PK>>
+   column( Name ): nvarchar
+   column( StartTime ): time
+   column( EndTime ): time
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductCategory )
+{
+   primary_key( ProductCategoryID ): int <<PK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Purchasing.ShipMethod )
+{
+   primary_key( ShipMethodID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ShipBase ): money
+   column( ShipRate ): money
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductCostHistory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( StartDate ): datetime <<PK>>
+   column( EndDate ): datetime
+   column( StandardCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductDescription )
+{
+   primary_key( ProductDescriptionID ): int <<PK>>
+   column( Description ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.ShoppingCartItem )
+{
+   primary_key( ShoppingCartItemID ): int <<PK>>
+   column( ShoppingCartID ): nvarchar
+   column( Quantity ): int
+   foreign_key( ProductID ): int <<FK>>
+   column( DateCreated ): datetime
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductDocument )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( DocumentNode ): hierarchyid <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductInventory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( LocationID ): smallint <<PK>>
+   column( Shelf ): nvarchar
+   column( Bin ): tinyint
+   column( Quantity ): smallint
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SpecialOffer )
+{
+   primary_key( SpecialOfferID ): int <<PK>>
+   column( Description ): nvarchar
+   column( DiscountPct ): smallmoney
+   column( Type ): nvarchar
+   column( Category ): nvarchar
+   column( StartDate ): datetime
+   column( EndDate ): datetime
+   column( MinQty ): int
+   column( MaxQty ): int
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductListPriceHistory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( StartDate ): datetime <<PK>>
+   column( EndDate ): datetime
+   column( ListPrice ): money
+   column( ModifiedDate ): datetime
+}
+table( Person.Address )
+{
+   primary_key( AddressID ): int <<PK>>
+   column( AddressLine1 ): nvarchar
+   column( AddressLine2 ): nvarchar
+   column( City ): nvarchar
+   foreign_key( StateProvinceID ): int <<FK>>
+   column( PostalCode ): nvarchar
+   column( SpatialLocation ): geography
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SpecialOfferProduct )
+{
+   primary_key( SpecialOfferID ): int <<PK>>
+   primary_key( ProductID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModel )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   column( Name ): nvarchar
+   column( CatalogDescription ): xml
+   column( Instructions ): xml
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.AddressType )
+{
+   primary_key( AddressTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.StateProvince )
+{
+   primary_key( StateProvinceID ): int <<PK>>
+   column( StateProvinceCode ): nchar
+   foreign_key( CountryRegionCode ): nvarchar <<FK>>
+   column( IsOnlyStateProvinceFlag ): bit
+   column( Name ): nvarchar
+   foreign_key( TerritoryID ): int <<FK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModelIllustration )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   primary_key( IllustrationID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModelProductDescriptionCulture )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   primary_key( ProductDescriptionID ): int <<PK>>
+   primary_key( CultureID ): nchar <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.BillOfMaterials )
+{
+   primary_key( BillOfMaterialsID ): int <<PK>>
+   foreign_key( ProductAssemblyID ): int <<FK>>
+   foreign_key( ComponentID ): int <<FK>>
+   column( StartDate ): datetime
+   column( EndDate ): datetime
+   foreign_key( UnitMeasureCode ): nchar <<FK>>
+   column( BOMLevel ): smallint
+   column( PerAssemblyQty ): decimal
+   column( ModifiedDate ): datetime
+}
+table( Sales.Store )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( Name ): nvarchar
+   foreign_key( SalesPersonID ): int <<FK>>
+   column( Demographics ): xml
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductPhoto )
+{
+   primary_key( ProductPhotoID ): int <<PK>>
+   column( ThumbNailPhoto ): varbinary
+   column( ThumbnailPhotoFileName ): nvarchar
+   column( LargePhoto ): varbinary
+   column( LargePhotoFileName ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductProductPhoto )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( ProductPhotoID ): int <<PK>>
+   column( Primary ): bit
+   column( ModifiedDate ): datetime
+}
+table( Production.TransactionHistory )
+{
+   primary_key( TransactionID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( ReferenceOrderID ): int
+   column( ReferenceOrderLineID ): int
+   column( TransactionDate ): datetime
+   column( TransactionType ): nchar
+   column( Quantity ): int
+   column( ActualCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductReview )
+{
+   primary_key( ProductReviewID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( ReviewerName ): nvarchar
+   column( ReviewDate ): datetime
+   column( EmailAddress ): nvarchar
+   column( Rating ): int
+   column( Comments ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntity )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductSubcategory )
+{
+   primary_key( ProductSubcategoryID ): int <<PK>>
+   foreign_key( ProductCategoryID ): int <<FK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntityAddress )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( AddressID ): int <<PK>>
+   primary_key( AddressTypeID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Purchasing.ProductVendor )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( AverageLeadTime ): int
+   column( StandardPrice ): money
+   column( LastReceiptCost ): money
+   column( LastReceiptDate ): datetime
+   column( MinOrderQty ): int
+   column( MaxOrderQty ): int
+   column( OnOrderQty ): int
+   foreign_key( UnitMeasureCode ): nchar <<FK>>
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntityContact )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( PersonID ): int <<PK>>
+   primary_key( ContactTypeID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.UnitMeasure )
+{
+   primary_key( UnitMeasureCode ): nchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Purchasing.Vendor )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( AccountNumber ): nvarchar
+   column( Name ): nvarchar
+   column( CreditRating ): tinyint
+   column( PreferredVendorStatus ): bit
+   column( ActiveFlag ): bit
+   column( PurchasingWebServiceURL ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Person.ContactType )
+{
+   primary_key( ContactTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Sales.CountryRegionCurrency )
+{
+   primary_key( CountryRegionCode ): nvarchar <<PK>>
+   primary_key( CurrencyCode ): nchar <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Person.CountryRegion )
+{
+   primary_key( CountryRegionCode ): nvarchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.WorkOrder )
+{
+   primary_key( WorkOrderID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( OrderQty ): int
+   column( StockedQty ): int
+   column( ScrappedQty ): smallint
+   column( StartDate ): datetime
+   column( EndDate ): datetime
+   column( DueDate ): datetime
+   foreign_key( ScrapReasonID ): smallint <<FK>>
+   column( ModifiedDate ): datetime
+}
+table( Purchasing.PurchaseOrderDetail )
+{
+   primary_key( PurchaseOrderID ): int <<PK>>
+   primary_key( PurchaseOrderDetailID ): int <<PK>>
+   column( DueDate ): datetime
+   column( OrderQty ): smallint
+   foreign_key( ProductID ): int <<FK>>
+   column( UnitPrice ): money
+   column( LineTotal ): money
+   column( ReceivedQty ): decimal
+   column( RejectedQty ): decimal
+   column( StockedQty ): decimal
+   column( ModifiedDate ): datetime
+}
+table( Sales.CreditCard )
+{
+   primary_key( CreditCardID ): int <<PK>>
+   column( CardType ): nvarchar
+   column( CardNumber ): nvarchar
+   column( ExpMonth ): tinyint
+   column( ExpYear ): smallint
+   column( ModifiedDate ): datetime
+}
+table( Production.Culture )
+{
+   primary_key( CultureID ): nchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.WorkOrderRouting )
+{
+   primary_key( WorkOrderID ): int <<PK>>
+   primary_key( ProductID ): int <<PK>>
+   primary_key( OperationSequence ): smallint <<PK>>
+   foreign_key( LocationID ): smallint <<FK>>
+   column( ScheduledStartDate ): datetime
+   column( ScheduledEndDate ): datetime
+   column( ActualStartDate ): datetime
+   column( ActualEndDate ): datetime
+   column( ActualResourceHrs ): decimal
+   column( PlannedCost ): money
+   column( ActualCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Sales.Currency )
+{
+   primary_key( CurrencyCode ): nchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Purchasing.PurchaseOrderHeader )
+{
+   primary_key( PurchaseOrderID ): int <<PK>>
+   column( RevisionNumber ): tinyint
+   column( Status ): tinyint
+   foreign_key( EmployeeID ): int <<FK>>
+   foreign_key( VendorID ): int <<FK>>
+   foreign_key( ShipMethodID ): int <<FK>>
+   column( OrderDate ): datetime
+   column( ShipDate ): datetime
+   column( SubTotal ): money
+   column( TaxAmt ): money
+   column( Freight ): money
+   column( TotalDue ): money
+   column( ModifiedDate ): datetime
+}
+table( Sales.CurrencyRate )
+{
+   primary_key( CurrencyRateID ): int <<PK>>
+   column( CurrencyRateDate ): datetime
+   foreign_key( FromCurrencyCode ): nchar <<FK>>
+   foreign_key( ToCurrencyCode ): nchar <<FK>>
+   column( AverageRate ): money
+   column( EndOfDayRate ): money
+   column( ModifiedDate ): datetime
+}
+table( Sales.Customer )
+{
+   primary_key( CustomerID ): int <<PK>>
+   foreign_key( PersonID ): int <<FK>>
+   foreign_key( StoreID ): int <<FK>>
+   foreign_key( TerritoryID ): int <<FK>>
+   column( AccountNumber ): varchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.Department )
+{
+   primary_key( DepartmentID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( GroupName ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.Document )
+{
+   primary_key( DocumentNode ): hierarchyid <<PK>>
+   column( DocumentLevel ): smallint
+   column( Title ): nvarchar
+   foreign_key( Owner ): int <<FK>>
+   column( FolderFlag ): bit
+   column( FileName ): nvarchar
+   column( FileExtension ): nvarchar
+   column( Revision ): nchar
+   column( ChangeNumber ): int
+   column( Status ): tinyint
+   column( DocumentSummary ): nvarchar
+   column( Document ): varbinary
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesOrderDetail )
+{
+   primary_key( SalesOrderID ): int <<PK>>
+   primary_key( SalesOrderDetailID ): int <<PK>>
+   column( CarrierTrackingNumber ): nvarchar
+   column( OrderQty ): smallint
+   foreign_key( ProductID ): int <<FK>>
+   foreign_key( SpecialOfferID ): int <<FK>>
+   column( UnitPrice ): money
+   column( UnitPriceDiscount ): money
+   column( LineTotal ): numeric
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.EmailAddress )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( EmailAddressID ): int <<PK>>
+   column( EmailAddress ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.Employee )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( NationalIDNumber ): nvarchar
+   column( LoginID ): nvarchar
+   column( OrganizationNode ): hierarchyid
+   column( OrganizationLevel ): smallint
+   column( JobTitle ): nvarchar
+   column( BirthDate ): date
+   column( MaritalStatus ): nchar
+   column( Gender ): nchar
+   column( HireDate ): date
+   column( SalariedFlag ): bit
+   column( VacationHours ): smallint
+   column( SickLeaveHours ): smallint
+   column( CurrentFlag ): bit
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesOrderHeader )
+{
+   primary_key( SalesOrderID ): int <<PK>>
+   column( RevisionNumber ): tinyint
+   column( OrderDate ): datetime
+   column( DueDate ): datetime
+   column( ShipDate ): datetime
+   column( Status ): tinyint
+   column( OnlineOrderFlag ): bit
+   column( SalesOrderNumber ): nvarchar
+   column( PurchaseOrderNumber ): nvarchar
+   column( AccountNumber ): nvarchar
+   foreign_key( CustomerID ): int <<FK>>
+   foreign_key( SalesPersonID ): int <<FK>>
+   foreign_key( TerritoryID ): int <<FK>>
+   foreign_key( BillToAddressID ): int <<FK>>
+   foreign_key( ShipToAddressID ): int <<FK>>
+   foreign_key( ShipMethodID ): int <<FK>>
+   foreign_key( CreditCardID ): int <<FK>>
+   column( CreditCardApprovalCode ): varchar
+   foreign_key( CurrencyRateID ): int <<FK>>
+   column( SubTotal ): money
+   column( TaxAmt ): money
+   column( Freight ): money
+   column( TotalDue ): money
+   column( Comment ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.EmployeeDepartmentHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( DepartmentID ): smallint <<PK>>
+   primary_key( ShiftID ): tinyint <<PK>>
+   primary_key( StartDate ): date <<PK>>
+   column( EndDate ): date
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.EmployeePayHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( RateChangeDate ): datetime <<PK>>
+   column( Rate ): money
+   column( PayFrequency ): tinyint
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesOrderHeaderSalesReason )
+{
+   primary_key( SalesOrderID ): int <<PK>>
+   primary_key( SalesReasonID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesPerson )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   foreign_key( TerritoryID ): int <<FK>>
+   column( SalesQuota ): money
+   column( Bonus ): money
+   column( CommissionPct ): smallmoney
+   column( SalesYTD ): money
+   column( SalesLastYear ): money
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.Illustration )
+{
+   primary_key( IllustrationID ): int <<PK>>
+   column( Diagram ): xml
+   column( ModifiedDate ): datetime
+}
+table( HumanResources.JobCandidate )
+{
+   primary_key( JobCandidateID ): int <<PK>>
+   foreign_key( BusinessEntityID ): int <<FK>>
+   column( Resume ): xml
+   column( ModifiedDate ): datetime
+}
+table( Production.Location )
+{
+   primary_key( LocationID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( CostRate ): smallmoney
+   column( Availability ): decimal
+   column( ModifiedDate ): datetime
+}
+table( Person.Password )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( PasswordHash ): varchar
+   column( PasswordSalt ): varchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesPersonQuotaHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( QuotaDate ): datetime <<PK>>
+   column( SalesQuota ): money
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.Person )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( PersonType ): nchar
+   column( NameStyle ): bit
+   column( Title ): nvarchar
+   column( FirstName ): nvarchar
+   column( MiddleName ): nvarchar
+   column( LastName ): nvarchar
+   column( Suffix ): nvarchar
+   column( EmailPromotion ): int
+   column( AdditionalContactInfo ): xml
+   column( Demographics ): xml
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesReason )
+{
+   primary_key( SalesReasonID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ReasonType ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesTaxRate )
+{
+   primary_key( SalesTaxRateID ): int <<PK>>
+   foreign_key( StateProvinceID ): int <<FK>>
+   column( TaxType ): tinyint
+   column( TaxRate ): smallmoney
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.PersonCreditCard )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( CreditCardID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Person.PersonPhone )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( PhoneNumber ): nvarchar <<PK>>
+   primary_key( PhoneNumberTypeID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesTerritory )
+{
+   primary_key( TerritoryID ): int <<PK>>
+   column( Name ): nvarchar
+   foreign_key( CountryRegionCode ): nvarchar <<FK>>
+   column( Group ): nvarchar
+   column( SalesYTD ): money
+   column( SalesLastYear ): money
+   column( CostYTD ): money
+   column( CostLastYear ): money
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.PhoneNumberType )
+{
+   primary_key( PhoneNumberTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.Product )
+{
+   primary_key( ProductID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ProductNumber ): nvarchar
+   column( MakeFlag ): bit
+   column( FinishedGoodsFlag ): bit
+   column( Color ): nvarchar
+   column( SafetyStockLevel ): smallint
+   column( ReorderPoint ): smallint
+   column( StandardCost ): money
+   column( ListPrice ): money
+   column( Size ): nvarchar
+   foreign_key( SizeUnitMeasureCode ): nchar <<FK>>
+   foreign_key( WeightUnitMeasureCode ): nchar <<FK>>
+   column( Weight ): decimal
+   column( DaysToManufacture ): int
+   column( ProductLine ): nchar
+   column( Class ): nchar
+   column( Style ): nchar
+   foreign_key( ProductSubcategoryID ): int <<FK>>
+   foreign_key( ProductModelID ): int <<FK>>
+   column( SellStartDate ): datetime
+   column( SellEndDate ): datetime
+   column( DiscontinuedDate ): datetime
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Sales.SalesTerritoryHistory )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( TerritoryID ): int <<PK>>
+   primary_key( StartDate ): datetime <<PK>>
+   column( EndDate ): datetime
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+' *** Define Table Relationships
+Production.ProductCostHistory }|--|| Production.Product
+Sales.ShoppingCartItem }|--|| Production.Product
+Production.ProductDocument }|--|| Production.Product
+Production.ProductDocument }|--|| Production.Document
+Production.ProductInventory }|--|| Production.Location
+Production.ProductInventory }|--|| Production.Product
+Production.ProductListPriceHistory }|--|| Production.Product
+Person.Address }|--|| Person.StateProvince
+Sales.SpecialOfferProduct }|--|| Production.Product
+Sales.SpecialOfferProduct }|--|| Sales.SpecialOffer
+Person.StateProvince }|--|| Person.CountryRegion
+Person.StateProvince }|--|| Sales.SalesTerritory
+Production.ProductModelIllustration }|--|| Production.ProductModel
+Production.ProductModelIllustration }|--|| Production.Illustration
+Production.ProductModelProductDescriptionCulture }|--|| Production.ProductDescription
+Production.ProductModelProductDescriptionCulture }|--|| Production.Culture
+Production.ProductModelProductDescriptionCulture }|--|| Production.ProductModel
+Production.BillOfMaterials }|--|| Production.Product
+Production.BillOfMaterials }|--|| Production.Product
+Production.BillOfMaterials }|--|| Production.UnitMeasure
+Sales.Store }|--|| Person.BusinessEntity
+Sales.Store }|--|| Sales.SalesPerson
+Production.ProductProductPhoto }|--|| Production.Product
+Production.ProductProductPhoto }|--|| Production.ProductPhoto
+Production.TransactionHistory }|--|| Production.Product
+Production.ProductReview }|--|| Production.Product
+Production.ProductSubcategory }|--|| Production.ProductCategory
+Person.BusinessEntityAddress }|--|| Person.Address
+Person.BusinessEntityAddress }|--|| Person.AddressType
+Person.BusinessEntityAddress }|--|| Person.BusinessEntity
+Purchasing.ProductVendor }|--|| Production.Product
+Purchasing.ProductVendor }|--|| Production.UnitMeasure
+Purchasing.ProductVendor }|--|| Purchasing.Vendor
+Person.BusinessEntityContact }|--|| Person.Person
+Person.BusinessEntityContact }|--|| Person.ContactType
+Person.BusinessEntityContact }|--|| Person.BusinessEntity
+Purchasing.Vendor }|--|| Person.BusinessEntity
+Sales.CountryRegionCurrency }|--|| Person.CountryRegion
+Sales.CountryRegionCurrency }|--|| Sales.Currency
+Production.WorkOrder }|--|| Production.Product
+Production.WorkOrder }|--|| Production.ScrapReason
+Purchasing.PurchaseOrderDetail }|--|| Production.Product
+Purchasing.PurchaseOrderDetail }|--|| Purchasing.PurchaseOrderHeader
+Production.WorkOrderRouting }|--|| Production.Location
+Production.WorkOrderRouting }|--|| Production.WorkOrder
+Purchasing.PurchaseOrderHeader }|--|| HumanResources.Employee
+Purchasing.PurchaseOrderHeader }|--|| Purchasing.Vendor
+Purchasing.PurchaseOrderHeader }|--|| Purchasing.ShipMethod
+Sales.CurrencyRate }|--|| Sales.Currency
+Sales.CurrencyRate }|--|| Sales.Currency
+Sales.Customer }|--|| Person.Person
+Sales.Customer }|--|| Sales.Store
+Sales.Customer }|--|| Sales.SalesTerritory
+Production.Document }|--|| HumanResources.Employee
+Sales.SalesOrderDetail }|--|| Sales.SalesOrderHeader
+Sales.SalesOrderDetail }|--|| Sales.SpecialOfferProduct
+Person.EmailAddress }|--|| Person.Person
+HumanResources.Employee }|--|| Person.Person
+Sales.SalesOrderHeader }|--|| Person.Address
+Sales.SalesOrderHeader }|--|| Person.Address
+Sales.SalesOrderHeader }|--|| Sales.CreditCard
+Sales.SalesOrderHeader }|--|| Sales.CurrencyRate
+Sales.SalesOrderHeader }|--|| Sales.Customer
+Sales.SalesOrderHeader }|--|| Sales.SalesPerson
+Sales.SalesOrderHeader }|--|| Purchasing.ShipMethod
+Sales.SalesOrderHeader }|--|| Sales.SalesTerritory
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Department
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Employee
+HumanResources.EmployeeDepartmentHistory }|--|| HumanResources.Shift
+HumanResources.EmployeePayHistory }|--|| HumanResources.Employee
+Sales.SalesOrderHeaderSalesReason }|--|| Sales.SalesReason
+Sales.SalesOrderHeaderSalesReason }|--|| Sales.SalesOrderHeader
+Sales.SalesPerson }|--|| HumanResources.Employee
+Sales.SalesPerson }|--|| Sales.SalesTerritory
+HumanResources.JobCandidate }|--|| HumanResources.Employee
+Person.Password }|--|| Person.Person
+Sales.SalesPersonQuotaHistory }|--|| Sales.SalesPerson
+Person.Person }|--|| Person.BusinessEntity
+Sales.SalesTaxRate }|--|| Person.StateProvince
+Sales.PersonCreditCard }|--|| Person.Person
+Sales.PersonCreditCard }|--|| Sales.CreditCard
+Person.PersonPhone }|--|| Person.Person
+Person.PersonPhone }|--|| Person.PhoneNumberType
+Sales.SalesTerritory }|--|| Person.CountryRegion
+Production.Product }|--|| Production.UnitMeasure
+Production.Product }|--|| Production.UnitMeasure
+Production.Product }|--|| Production.ProductModel
+Production.Product }|--|| Production.ProductSubcategory
+Sales.SalesTerritoryHistory }|--|| Sales.SalesPerson
+Sales.SalesTerritoryHistory }|--|| Sales.SalesTerritory
+@enduml

@@ -1,0 +1,280 @@
+
+@startuml
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+table( Production.ScrapReason )
+{
+   primary_key( ScrapReasonID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductCategory )
+{
+   primary_key( ProductCategoryID ): int <<PK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductCostHistory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( StartDate ): datetime <<PK>>
+   column( EndDate ): datetime
+   column( StandardCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductDescription )
+{
+   primary_key( ProductDescriptionID ): int <<PK>>
+   column( Description ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductDocument )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( DocumentNode ): hierarchyid <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductInventory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( LocationID ): smallint <<PK>>
+   column( Shelf ): nvarchar
+   column( Bin ): tinyint
+   column( Quantity ): smallint
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductListPriceHistory )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( StartDate ): datetime <<PK>>
+   column( EndDate ): datetime
+   column( ListPrice ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModel )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   column( Name ): nvarchar
+   column( CatalogDescription ): xml
+   column( Instructions ): xml
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModelIllustration )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   primary_key( IllustrationID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductModelProductDescriptionCulture )
+{
+   primary_key( ProductModelID ): int <<PK>>
+   primary_key( ProductDescriptionID ): int <<PK>>
+   primary_key( CultureID ): nchar <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.BillOfMaterials )
+{
+   primary_key( BillOfMaterialsID ): int <<PK>>
+   foreign_key( ProductAssemblyID ): int <<FK>>
+   foreign_key( ComponentID ): int <<FK>>
+   column( StartDate ): datetime
+   column( EndDate ): datetime
+   foreign_key( UnitMeasureCode ): nchar <<FK>>
+   column( BOMLevel ): smallint
+   column( PerAssemblyQty ): decimal
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductPhoto )
+{
+   primary_key( ProductPhotoID ): int <<PK>>
+   column( ThumbNailPhoto ): varbinary
+   column( ThumbnailPhotoFileName ): nvarchar
+   column( LargePhoto ): varbinary
+   column( LargePhotoFileName ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductProductPhoto )
+{
+   primary_key( ProductID ): int <<PK>>
+   primary_key( ProductPhotoID ): int <<PK>>
+   column( Primary ): bit
+   column( ModifiedDate ): datetime
+}
+table( Production.TransactionHistory )
+{
+   primary_key( TransactionID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( ReferenceOrderID ): int
+   column( ReferenceOrderLineID ): int
+   column( TransactionDate ): datetime
+   column( TransactionType ): nchar
+   column( Quantity ): int
+   column( ActualCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductReview )
+{
+   primary_key( ProductReviewID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( ReviewerName ): nvarchar
+   column( ReviewDate ): datetime
+   column( EmailAddress ): nvarchar
+   column( Rating ): int
+   column( Comments ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.TransactionHistoryArchive )
+{
+   primary_key( TransactionID ): int <<PK>>
+   column( ProductID ): int
+   column( ReferenceOrderID ): int
+   column( ReferenceOrderLineID ): int
+   column( TransactionDate ): datetime
+   column( TransactionType ): nchar
+   column( Quantity ): int
+   column( ActualCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.ProductSubcategory )
+{
+   primary_key( ProductSubcategoryID ): int <<PK>>
+   foreign_key( ProductCategoryID ): int <<FK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.UnitMeasure )
+{
+   primary_key( UnitMeasureCode ): nchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.WorkOrder )
+{
+   primary_key( WorkOrderID ): int <<PK>>
+   foreign_key( ProductID ): int <<FK>>
+   column( OrderQty ): int
+   column( StockedQty ): int
+   column( ScrappedQty ): smallint
+   column( StartDate ): datetime
+   column( EndDate ): datetime
+   column( DueDate ): datetime
+   foreign_key( ScrapReasonID ): smallint <<FK>>
+   column( ModifiedDate ): datetime
+}
+table( Production.Culture )
+{
+   primary_key( CultureID ): nchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Production.WorkOrderRouting )
+{
+   primary_key( WorkOrderID ): int <<PK>>
+   primary_key( ProductID ): int <<PK>>
+   primary_key( OperationSequence ): smallint <<PK>>
+   foreign_key( LocationID ): smallint <<FK>>
+   column( ScheduledStartDate ): datetime
+   column( ScheduledEndDate ): datetime
+   column( ActualStartDate ): datetime
+   column( ActualEndDate ): datetime
+   column( ActualResourceHrs ): decimal
+   column( PlannedCost ): money
+   column( ActualCost ): money
+   column( ModifiedDate ): datetime
+}
+table( Production.Document )
+{
+   primary_key( DocumentNode ): hierarchyid <<PK>>
+   column( DocumentLevel ): smallint
+   column( Title ): nvarchar
+   foreign_key( Owner ): int <<FK>>
+   column( FolderFlag ): bit
+   column( FileName ): nvarchar
+   column( FileExtension ): nvarchar
+   column( Revision ): nchar
+   column( ChangeNumber ): int
+   column( Status ): tinyint
+   column( DocumentSummary ): nvarchar
+   column( Document ): varbinary
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Production.Illustration )
+{
+   primary_key( IllustrationID ): int <<PK>>
+   column( Diagram ): xml
+   column( ModifiedDate ): datetime
+}
+table( Production.Location )
+{
+   primary_key( LocationID ): smallint <<PK>>
+   column( Name ): nvarchar
+   column( CostRate ): smallmoney
+   column( Availability ): decimal
+   column( ModifiedDate ): datetime
+}
+table( Production.Product )
+{
+   primary_key( ProductID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ProductNumber ): nvarchar
+   column( MakeFlag ): bit
+   column( FinishedGoodsFlag ): bit
+   column( Color ): nvarchar
+   column( SafetyStockLevel ): smallint
+   column( ReorderPoint ): smallint
+   column( StandardCost ): money
+   column( ListPrice ): money
+   column( Size ): nvarchar
+   foreign_key( SizeUnitMeasureCode ): nchar <<FK>>
+   foreign_key( WeightUnitMeasureCode ): nchar <<FK>>
+   column( Weight ): decimal
+   column( DaysToManufacture ): int
+   column( ProductLine ): nchar
+   column( Class ): nchar
+   column( Style ): nchar
+   foreign_key( ProductSubcategoryID ): int <<FK>>
+   foreign_key( ProductModelID ): int <<FK>>
+   column( SellStartDate ): datetime
+   column( SellEndDate ): datetime
+   column( DiscontinuedDate ): datetime
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+' *** Define Table Relationships
+Production.ProductCostHistory }|--|| Production.Product
+Production.ProductDocument }|--|| Production.Product
+Production.ProductDocument }|--|| Production.Document
+Production.ProductInventory }|--|| Production.Location
+Production.ProductInventory }|--|| Production.Product
+Production.ProductListPriceHistory }|--|| Production.Product
+Production.ProductModelIllustration }|--|| Production.ProductModel
+Production.ProductModelIllustration }|--|| Production.Illustration
+Production.ProductModelProductDescriptionCulture }|--|| Production.ProductDescription
+Production.ProductModelProductDescriptionCulture }|--|| Production.Culture
+Production.ProductModelProductDescriptionCulture }|--|| Production.ProductModel
+Production.BillOfMaterials }|--|| Production.Product
+Production.BillOfMaterials }|--|| Production.Product
+Production.BillOfMaterials }|--|| Production.UnitMeasure
+Production.ProductProductPhoto }|--|| Production.Product
+Production.ProductProductPhoto }|--|| Production.ProductPhoto
+Production.TransactionHistory }|--|| Production.Product
+Production.ProductReview }|--|| Production.Product
+Production.ProductSubcategory }|--|| Production.ProductCategory
+Production.WorkOrder }|--|| Production.Product
+Production.WorkOrder }|--|| Production.ScrapReason
+Production.WorkOrderRouting }|--|| Production.Location
+Production.WorkOrderRouting }|--|| Production.WorkOrder
+Production.Product }|--|| Production.UnitMeasure
+Production.Product }|--|| Production.UnitMeasure
+Production.Product }|--|| Production.ProductModel
+Production.Product }|--|| Production.ProductSubcategory
+@enduml

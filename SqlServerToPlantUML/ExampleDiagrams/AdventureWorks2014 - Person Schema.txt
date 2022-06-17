@@ -1,0 +1,131 @@
+
+@startuml
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+table( Person.Address )
+{
+   primary_key( AddressID ): int <<PK>>
+   column( AddressLine1 ): nvarchar
+   column( AddressLine2 ): nvarchar
+   column( City ): nvarchar
+   foreign_key( StateProvinceID ): int <<FK>>
+   column( PostalCode ): nvarchar
+   column( SpatialLocation ): geography
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.AddressType )
+{
+   primary_key( AddressTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.StateProvince )
+{
+   primary_key( StateProvinceID ): int <<PK>>
+   column( StateProvinceCode ): nchar
+   foreign_key( CountryRegionCode ): nvarchar <<FK>>
+   column( IsOnlyStateProvinceFlag ): bit
+   column( Name ): nvarchar
+   foreign_key( TerritoryID ): int <<FK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntity )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntityAddress )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( AddressID ): int <<PK>>
+   primary_key( AddressTypeID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.BusinessEntityContact )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( PersonID ): int <<PK>>
+   primary_key( ContactTypeID ): int <<PK>>
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.ContactType )
+{
+   primary_key( ContactTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Person.CountryRegion )
+{
+   primary_key( CountryRegionCode ): nvarchar <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+table( Person.EmailAddress )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( EmailAddressID ): int <<PK>>
+   column( EmailAddress ): nvarchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.Password )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( PasswordHash ): varchar
+   column( PasswordSalt ): varchar
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.Person )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   column( PersonType ): nchar
+   column( NameStyle ): bit
+   column( Title ): nvarchar
+   column( FirstName ): nvarchar
+   column( MiddleName ): nvarchar
+   column( LastName ): nvarchar
+   column( Suffix ): nvarchar
+   column( EmailPromotion ): int
+   column( AdditionalContactInfo ): xml
+   column( Demographics ): xml
+   column( rowguid ): uniqueidentifier
+   column( ModifiedDate ): datetime
+}
+table( Person.PersonPhone )
+{
+   primary_key( BusinessEntityID ): int <<PK>>
+   primary_key( PhoneNumber ): nvarchar <<PK>>
+   primary_key( PhoneNumberTypeID ): int <<PK>>
+   column( ModifiedDate ): datetime
+}
+table( Person.PhoneNumberType )
+{
+   primary_key( PhoneNumberTypeID ): int <<PK>>
+   column( Name ): nvarchar
+   column( ModifiedDate ): datetime
+}
+' *** Define Table Relationships
+Person.Address }|--|| Person.StateProvince
+Person.StateProvince }|--|| Person.CountryRegion
+Person.BusinessEntityAddress }|--|| Person.Address
+Person.BusinessEntityAddress }|--|| Person.AddressType
+Person.BusinessEntityAddress }|--|| Person.BusinessEntity
+Person.BusinessEntityContact }|--|| Person.Person
+Person.BusinessEntityContact }|--|| Person.ContactType
+Person.BusinessEntityContact }|--|| Person.BusinessEntity
+Person.EmailAddress }|--|| Person.Person
+Person.Password }|--|| Person.Person
+Person.Person }|--|| Person.BusinessEntity
+Person.PersonPhone }|--|| Person.Person
+Person.PersonPhone }|--|| Person.PhoneNumberType
+@enduml
